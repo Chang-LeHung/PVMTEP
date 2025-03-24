@@ -7,9 +7,9 @@
 pthread_mutex_t mutex;
 int shared_resource = 0;
 
-void *thread_function(void *thread_id)
+void *thread_function(void *arg)
 {
-  long tid = (long)thread_id;
+  long tid = (long)pthread_self();
 
   pthread_mutex_lock(&mutex);
   shared_resource++;
