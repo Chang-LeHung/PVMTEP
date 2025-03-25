@@ -78,9 +78,9 @@ int main()
     return 1;
   }
 
-  // unreachable code
   pthread_join(producer_thread, NULL);
   pthread_join(consumer_thread, NULL);
 
+  // unreachable code
   return 0;
 }
