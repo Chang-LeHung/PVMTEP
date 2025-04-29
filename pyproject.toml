@@ -1,0 +1,14 @@
+[tool.ruff]
+select = ["E", "W", "F", "UP", "I", "Q", "D", "A001", "UP"]
+ignore = []
+
+# 调整行长度限制（默认 88）
+line-length = 88
+
+# 自动修复所有可修复的问题
+fix = true
+
+[tool.ruff.lint]
+# 启用所有 PEP 8 相关规则
+# 显式启用 PEP 8 规则
+extend-select = ["E501", "E203", "E231"]
