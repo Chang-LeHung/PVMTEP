@@ -655,6 +655,8 @@ class FastPyIfIR(FastPyIR):
         self.false_block = false_block
         self.gen_true = gen_true
         self.gen_false = gen_false
+        self.verified: bool = False
+        self.verified_res: bool = False
 
     def type(self):
         """."""
@@ -662,7 +664,12 @@ class FastPyIfIR(FastPyIR):
 
     def verify(self):
         """."""
-        return self.condition.verify() and self.true_block.verify() and self.false_block.verify()
+        if not self.verified:
+            self.verified = True
+            self.verified_res = (
+                self.condition.verify() and self.true_block.verify() and self.false_block.verify()
+            )
+        return self.verified_res
 
     def is_consntant(self):
         """."""
