@@ -37,6 +37,7 @@ class FastPyCompiler:
         self.tree = ast.parse(source)
         self.visitor.visit(self.tree)
         self.res = self.visitor.get_func_ir()
+        self.res.verify()
         self.generator = FastPyCodeGenerator(self.func, self.visitor.all_basic_blocks)
         self.res.code_gen(self.generator)
         self.compiled = True
@@ -120,7 +121,6 @@ class HelperCaller:
 
     def __init__(self, func: Callable[..., Any], log: bool = False):
         """."""
-        print(func.__globals__.keys())
         source = inspect.getsource(func)
         self.tree = ast.parse(source)
         self.compiler = FastPyCompiler(func)
@@ -129,7 +129,7 @@ class HelperCaller:
         if log:
             print(self.compiler.dump())
         with lock:
-            _ = compile_ir(root_engine, self.compiler.dump())
+            self.mod = compile_ir(root_engine, self.compiler.dump())
         self.func = func
 
     @property
@@ -141,6 +141,15 @@ class HelperCaller:
     def ast_tree(self):
         """."""
         return ast.dump(self.compiler.tree, indent=4)
+
+    @property
+    def asm_code(self):
+        """."""
+        target = binding.Target.from_default_triple()
+        target_machine = target.create_target_machine()
+        assembly = target_machine.emit_assembly(self.mod)
+
+        return assembly
 
     def __call__(self, *args, **kwds):
         """."""
